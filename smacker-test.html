@@ -1,0 +1,68 @@
+<html>
+<head>
+    <script text='text/javascript' src="stream.js"></script> 
+    <script text='text/javascript' src="bitstream.js"></script> 
+    <script text='text/javascript' src="huffman.js"></script> 
+    <script text='text/javascript' src="smkdecoder.js"></script> 
+    <script text='text/javascript' src="smkfile.js"></script> 
+    <script text='text/javascript' src="util.js"></script> 
+
+    <script text='text/javascript' src="blizzard.smk.js"></script>
+
+</head>
+<body>
+  <canvas id="smacker-canvas" width="220" height="172"></canvas>
+
+    <script text='text/javascript'>
+
+      var canvas = document.getElementById ("smacker-canvas");
+
+      console.log (1);
+      var stream = new scsharp.smk.DataStream (smk_data);
+
+      console.log (2);
+      var smkfile = new scsharp.smk.SmackerFile (stream);
+
+      console.log (3);
+
+      var smkdecoder = smkfile.decoder;
+
+      console.log (4);
+
+      var ctx = canvas.getContext("2d");
+      var canvasImageData = ctx.createImageData (320, 308);
+
+      smkdecoder.reset ();
+
+      var i = 0;
+
+      function handleFrame () {
+        if ((i % 2) == 0) {
+//          console.log ("drawing video");
+
+          if (smkdecoder.currentFrame < smkdecoder.file.header.nbFrames) {
+            smkdecoder.readNextFrame ();
+
+            smkdecoder.getRGBAData (canvasImageData);
+
+            ctx.putImageData (canvasImageData, 0, 0);
+          }
+        }
+        else {
+//          console.log ("blanking video");
+
+          ctx.fillStyle = "rgb(0,0,0)";
+          ctx.fillRect (0, 0, 320, 308);
+        }
+
+//        i++;
+      }
+
+      console.log ("smkfile.header.fps is " + smkfile.header.fps);
+      console.log ("1/smkfile.header.fps is " + (1/smkfile.header.fps));
+      console.log ("interval is " + Math.floor ((1/smkfile.header.fps) * 1000));
+      setInterval ("handleFrame ()", Math.floor ((1/smkfile.header.fps) * 1000));
+    </script>
+
+</body>
+</html>
