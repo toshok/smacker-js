@@ -1,0 +1,17 @@
+A Smacker decoder in Javascript
+-------------------------------
+
+Just a weekend hack converting the c# decoder in scsharp over to JS.  Doesn't work quite yet.
+
+The only stream type available reads from JS arrays, so you'll need to convert .smk files.
+
+  $ gmcs smk-to-js.cs
+  $ mono smk-to-js.exe blizzard.smk > blizzard.smk.js
+
+and then update this line in smacker-test.html with to point to the .smk.js file
+
+  <script text='text/javascript' src="blizzard.smk.js"></script>
+
+this will generate a potentially huge .js file.  both firefox 3.6 and newer safaris seem to
+choke on that large of an array literal.  I've been running things in chrome-stable without
+problems, though.
